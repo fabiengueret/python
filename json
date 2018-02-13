@@ -1,0 +1,29 @@
+import json
+import urllib.request, urllib.parse, urllib.error
+
+# Base url address
+serviceurl = 'http:/terramollis.com/'
+#determines the rest of the url. avoids typing errors
+SampleorActual= input('Sample comments, enter 1 or Actual comments, enter 2 ')
+if SampleorActual == '1': address ='file_1.json'
+else:  address ='file_2.json'
+#puts the url together and fetches data
+url = serviceurl + address
+print('Retrieving', url)
+uh = urllib.request.urlopen(url)
+data = uh.read()
+print('Retrieved', len(data), 'characters')
+#print(data.decode())
+
+info = json.loads(data)
+
+total = 0
+counter = 0
+comments = info['comments']
+for item in comments:
+
+    total = total + item['count']
+    counter = counter + 1
+
+print('Count', counter)
+print('Total', total)
