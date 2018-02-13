@@ -1,0 +1,10 @@
+
+import httplib, urllib, json
+
+postcode = "ID1 1QD"
+params = {"api_key": "iddqd"}
+
+conn = httplib.HTTPSConnection("api.ideal-postcodes.co.uk:443")
+conn.request("GET", "/v1/postcodes/%s?%s" % (urllib.quote(postcode), urllib.urlencode(params)))
+
+addresses = json.load(conn.getresponse())['result']
