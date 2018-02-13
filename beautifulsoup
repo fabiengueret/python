@@ -1,0 +1,39 @@
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import ssl
+
+# Ignore SSL certificate errors
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+# initialisation
+countspantag = 0
+total = 0
+
+# selection of the web page to pull
+page =input('Enter 1 for sample file and 2 for actual- ')
+if page =="1":
+   url = 'http://terramollis.com/comments_1.html'
+else:
+   url = 'http://terramollis.com/comments_2.html'
+
+#urlopen html
+html = urlopen(url, context=ctx).read()
+
+# html.parser is the HTML parser included in the standard Python 3 library.
+# information on other HTML parsers is here:
+# http://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-a-parser
+soup = BeautifulSoup(html, "html.parser")
+
+# Retrieve all of the span tags
+spantags = soup('span')
+# Got through the span tags, convert and sum them + count
+for spantag in spantags:
+    # Look at the contents of the tag and converts to integer
+    value = int(spantag.contents[0])
+    countspantag = countspantag + 1
+    total = total + value
+print('Count', countspantag)
+print('Total', total)
