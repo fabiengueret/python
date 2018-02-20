@@ -1,0 +1,79 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+%matplotlib notebook
+
+# generate 4 random variables from the random, gamma, exponential, and uniform distributions
+x1 = np.random.normal(-2.5, 1, 10000)
+x2 = np.random.gamma(2, 1.5, 10000)
+x3 = np.random.exponential(2, 10000)+7
+x4 = np.random.uniform(14,20, 10000)
+
+# plot the histograms
+plt.figure(figsize=(9,3))
+plt.hist(x1, normed=True, bins=20, alpha=0.5)
+plt.hist(x2, normed=True, bins=20, alpha=0.5)
+plt.hist(x3, normed=True, bins=20, alpha=0.5)
+plt.hist(x4, normed=True, bins=20, alpha=0.5);
+plt.axis([-7,21,0,0.6])
+
+plt.text(x1.mean()-1.5, 0.5, 'x1\nNormal')
+plt.text(x2.mean()-1.5, 0.5, 'x2\nGamma')
+plt.text(x3.mean()-1.5, 0.5, 'x3\nExponential')
+plt.text(x4.mean()-1.5, 0.5, 'x4\nUniform')
+matplotlib notebook
+
+# generate 4 random variables from the random, gamma, exponential, and uniform distributions
+x1 = np.random.normal(0, 1, 10000)
+x2 = np.random.gamma(2, 1.5, 10000)
+x3 = np.random.exponential(2, 10000)+7
+x4 = np.random.uniform(14,20, 10000)
+xGen= np.array([x1,x2,x3,x4])
+Title = ['Normal','Gamma','Exponential','Uniform']
+
+# create 2x2 grid of axis subplots
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex=True)
+axs = [ax1,ax2,ax3,ax4]
+
+# draw a 2 by 2 subplot
+for n in range(0,4):
+    axs[n].hist(xGen[n],bins=100)
+    axs[n].set_title(Title[n])
+    
+# use gridspec to partition the figure into subplots
+import matplotlib.gridspec as gridspec
+
+plt.figure()
+gspec = gridspec.GridSpec(3, 3)
+
+top_histogram = plt.subplot(gspec[0, 1:])
+side_histogram = plt.subplot(gspec[1:, 0])
+lower_right = plt.subplot(gspec[1:, 1:])
+
+Y = x1
+X = x2
+lower_right.scatter(X, Y)
+# plot normed histograms
+top_histogram.hist(X, bins=100, normed=True)
+side_histogram.hist(Y, bins=100, orientation='horizontal', normed=True)
+# flip the side histogram's x axis
+side_histogram.invert_xaxis()
+
+final = 1000
+
+def update(curr):
+    # check if animation is at the last frame, and if so, stop the animation a
+    if curr == final: 
+        a.event_source.stop()
+    plt.cla()
+    bins = np.arange(14, 24, 0.5)
+    plt.hist(x3[:curr], bins=bins)
+    plt.axis([7,20,0,10])
+    plt.gca().set_title('Sampling the Exponential Distribution')
+    plt.gca().set_ylabel('Frequency')
+    plt.gca().set_xlabel('Value')
+    plt.annotate('n = {}'.format(curr), [3,27])
+    
+fig = plt.figure()
+a = animation.FuncAnimation(fig, update, interval=100)
+    
