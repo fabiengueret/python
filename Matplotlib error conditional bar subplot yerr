@@ -1,0 +1,68 @@
+# coding: utf-8
+
+
+get_ipython().magic('matplotlib notebook')
+import pandas as pd
+import numpy as np
+import math   # This will import math module
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+
+#Ask for the value of interest
+Value = int(input('what value do you want to test? '))
+
+
+# Data formed list wise
+np.random.seed(12345)
+
+d1992 =np.random.normal(32000,2000,3650)
+d1993 =np.random.normal(43000,3500,3650)
+d1994 =np.random.normal(43500,2400,3650)
+d1995 = np.random.normal(48000,1700,3650)
+df = pd.DataFrame({1992:d1992,
+                   1993:d1993,
+                   1994:d1994,
+                   1995:d1995})
+              
+labels = df.columns
+
+fig, ax = plt.subplots()
+
+# colorise conditionally 
+interval =pd.DataFrame()
+interval['mean']=df.mean()
+interval['std']=df.std()*1.96
+interval['high']= df.mean()+df.std()*1.96
+interval['low'] = df.mean()-df.std()*1.96
+interval['value']=Value
+
+conditions = [
+    (interval['high']<interval['value']),
+    (interval['low']>interval['value'])]
+choices = ['blue', 'red']
+interval['colour'] = np.select(conditions, choices, default='skyblue')
+
+# set the x axis with width
+ind = np.arange(4)  # the x locations for the groups
+width = 0.5       # the width of the bars
+
+
+# Draw the bars
+ax.bar(ind+width, interval['mean'], color=interval['colour'], yerr =interval['std'] , capsize=10, align='center')
+
+
+# copy the axes of the main plot onto the line and box plots
+
+ax3 = ax.twinx()
+ax3.set_ylim(ax.get_ylim())
+
+
+# Draw the line
+ax3.plot([0, 4], [Value, Value], color='g', linestyle='-', linewidth=2)
+
+#labels
+ax.set_xticks(ind+width)
+ax.set_xticklabels(labels, rotation='horizontal')
+
+plt.show()
+
